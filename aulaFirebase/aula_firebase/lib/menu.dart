@@ -1,3 +1,4 @@
+import 'package:aula_firebase/messagesFirestore.dart';
 import 'package:flutter/material.dart';
 
 import 'tela_Adicionar.dart';
@@ -17,12 +18,20 @@ class Menu extends StatelessWidget {
             tooltip: 'Clique para adicionar registros',
           ),
           IconButton(
+            icon: Icon(Icons.star),
+            onPressed:(){
+              _abreTelaListar(context, MensagensFirestore("Simon", "Augusto"));
+            },
+            tooltip: 'Clique para mandar mensagem para Augusto',
+          ),
+          IconButton(
             icon: Icon(Icons.line_style),
             onPressed:(){
               _abreTelaListar(context, TelaConsulta());
               },
             tooltip: 'Clique para visualizar os registros',
-          )
+          ),
+
         ],
       ),
 

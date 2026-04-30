@@ -1,5 +1,9 @@
+import 'package:aula_firebase/models/mensagens.dart';
 import 'package:aula_firebase/widgets/widgetsInput.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'firebase_options.dart';
 
 import 'widgets/widgetsButton.dart';
 import 'widgets/widgetsTexto.dart';
@@ -19,8 +23,17 @@ class _MensagensFirestoreState extends State<MensagensFirestore> {
   final _qtdmsg = TextEditingController();
    List _resultsList = [];
 
+  Future <void> inicializarFirbase() async{
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    Firebase.initializeApp().whenComplete(() => print("Conectado"));
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    inicializarFirbase();
     _user.text=widget.user.toString();
     _friend.text=widget.friend.toString();
     return Scaffold(
@@ -63,13 +76,24 @@ class _MensagensFirestoreState extends State<MensagensFirestore> {
 
 
   void _clicksend(BuildContext ctx) {
+    Mensagens ms = new Mensagens();
+    ms.friend = _friend.text.toString().trim();
+    ms.user = _user.text.toString().trim();
+    ms.msg = _msg.text.toString().trim();
+    ms.dt = DateTime.now();
 
-    _msg.text="";
-    _qtdmsg.text="1";
+
+    CollectionReference instanciaColecaoFirestore = FirebaseFirestore.instance
+        .collection("msg");
+    Future <void> addMsg() {
+      return instanciaColecaoFirestore
+          .doc(ms.dt.toString().trim())
+          .set(ms.toJson())
+          .then((value) => print("Mensagem Adicionada"))
+          .catchError((onError) => print("Erro ao gravar no banco $onError"));
+    }
+    addMsg();
   }
-
-
-
 
   void _buscaRegistro() {
   }
